@@ -1,0 +1,14 @@
+# Backend
+server/node_modules/
+server/.env
+server/*.log
+server/tmp/
+
+# Frontend
+cliente/node_modules/
+cliente/.env
+cliente/dist/
+cliente/build/
+
+# Comunes
+.DS_Store
