@@ -1,11 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-require('./database');
+const conexion = require('./database');
 require('dotenv').config();
 
 //inicializar express
 const app = express();
+conexion();
 
 //puerto
 app.set('port', process.env.PORT || 3000);
@@ -14,6 +15,7 @@ app.set('port', process.env.PORT || 3000);
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
+app.use('/api', require('./routes/Task.routes.jsx'));
 
 //puerto
 app.listen(app.get('port'), () => {
