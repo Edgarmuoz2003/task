@@ -9,7 +9,7 @@ function TaskList() {
   const [done, setDone] = useState(false);
 
   
-
+//funciones para mostrar mensajes de error y exito
   useEffect(() => {
     if (errorMessage) {
       Swal.fire({
@@ -20,6 +20,8 @@ function TaskList() {
         showConfirmButton: false,
       });
   
+      //se agrego este timer para resetear el mensaje de error despues de 3 segundos
+      // ya que el mensaje simpre llega igual por lo que el useEfect no re-renderiza
       const timer = setTimeout(() => {
         setErrorMessage(""); 
       }, 3000);
@@ -32,7 +34,7 @@ function TaskList() {
     if (message) {
       Swal.fire({
         icon: "success",
-        title: "Tarea Creada",
+        title: "¡Hecho!",
         text: message,
         timer: 3000,
         showConfirmButton: false,
