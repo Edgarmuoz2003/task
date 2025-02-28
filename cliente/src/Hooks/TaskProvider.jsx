@@ -3,15 +3,20 @@ import TaskContext from "./TaskContext";
 import axios from "axios";
 import PropTypes from "prop-types";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
+const baseURL = `${apiUrl}:${apiPort}/api`;
+
+
 
 function TaskProvider({ children }) {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const getTasks = async () => {//moví esta función afuera del useEffect para poder llamarla desde el createTask
+  const getTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/get");
+      const response = await axios.get(`${baseURL}/get`);
       setData(response.data || []);
     } catch (error) {
       setErrorMessage("Error de conexión");
@@ -21,61 +26,48 @@ function TaskProvider({ children }) {
 
   const createTask = async (task, done) => {
     try {
-        const response = await axios.post("http://localhost:4000/api/create", { task, done });
-    if (response.status === 200) {
+      const response = await axios.post(`${baseURL}/create`, { task, done });
+      if (response.status === 200) {
         setMessage(response.data.message);
         setErrorMessage("null");
-    }
-    getTasks();//este llamado es para que se actualice la lista de tareas cuando se crea una nueva.
-    return true
+      }
+      getTasks();
+      return true;
     } catch (error) {
-        if (error.response.data.message) {
-            setErrorMessage(error.response.data.message);
-        } else {
-            setErrorMessage("Error de conexión");
-        }
-        return false
+      setErrorMessage(error.response?.data?.message || "Error de conexión");
+      return false;
     }
-    
-}
+  };
 
-const deleteTask = async (id) => {
+  const deleteTask = async (id) => {
     try {
-        const response = await axios.delete(`http://localhost:4000/api/delete/${id}`);
-        if (response.status === 200) {
-            setMessage(response.data.message);
-            setErrorMessage("null");
-        }
-        getTasks();
-        return true
+      const response = await axios.delete(`${baseURL}/delete/${id}`);
+      if (response.status === 200) {
+        setMessage(response.data.message);
+        setErrorMessage("null");
+      }
+      getTasks();
+      return true;
     } catch (error) {
-        if (error.response.data.message) {
-            setErrorMessage(error.response.data.message);
-        } else {
-            setErrorMessage("Error de conexión");
-        }
-        return false
+      setErrorMessage(error.response?.data?.message || "Error de conexión");
+      return false;
     }
-}
+  };
 
-const updateTask = async (id, done) => {
-  try {
-    const response = await axios.patch(`http://localhost:4000/api/update/${id}`, { done });
-    if (response.status === 200) {
-      setMessage(response.data.message);
-      setErrorMessage("null");
+  const updateTask = async (id, done) => {
+    try {
+      const response = await axios.patch(`${baseURL}/update/${id}`, { done });
+      if (response.status === 200) {
+        setMessage(response.data.message);
+        setErrorMessage("null");
+      }
+      getTasks();
+      return true;
+    } catch (error) {
+      setErrorMessage(error.response?.data?.message || "Error de conexión");
+      return false;
     }
-    getTasks();
-    return true;
-  } catch (error) {
-    if (error.response.data.message) {
-      setErrorMessage(error.response.data.message);
-    } else {
-      setErrorMessage("Error de conexión");
-    }
-    return false;
-  }
-}
+  };
 
 
 
