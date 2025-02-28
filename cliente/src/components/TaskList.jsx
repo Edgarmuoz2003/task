@@ -4,12 +4,12 @@ import UseTask from "../Hooks/UseTask";
 import Swal from "sweetalert2";
 
 function TaskList() {
-  const { message, setMessage, errorMessage, setErrorMessage, createTask } = UseTask();
+  const { message, setMessage, errorMessage, setErrorMessage, createTask } =
+    UseTask();
   const [task, setTask] = useState("");
   const [done, setDone] = useState(false);
 
-  
-//funciones para mostrar mensajes de error y exito
+  //funciones para mostrar mensajes de error y exito
   useEffect(() => {
     if (errorMessage) {
       Swal.fire({
@@ -19,17 +19,17 @@ function TaskList() {
         timer: 3000,
         showConfirmButton: false,
       });
-  
+
       //se agrego este timer para resetear el mensaje de error despues de 3 segundos
       // ya que el mensaje simpre llega igual por lo que el useEfect no re-renderiza
       const timer = setTimeout(() => {
-        setErrorMessage(""); 
+        setErrorMessage("");
       }, 3000);
-  
-      return () => clearTimeout(timer); 
+
+      return () => clearTimeout(timer);
     }
-  }, [errorMessage, setErrorMessage]); 
-  
+  }, [errorMessage, setErrorMessage]);
+
   useEffect(() => {
     if (message) {
       Swal.fire({
@@ -39,14 +39,14 @@ function TaskList() {
         timer: 3000,
         showConfirmButton: false,
       });
-  
+
       const timer = setTimeout(() => {
-        setMessage(""); 
+        setMessage("");
       }, 3000);
-  
-      return () => clearTimeout(timer); 
+
+      return () => clearTimeout(timer);
     }
-  }, [message, setMessage]); 
+  }, [message, setMessage]);
 
   const handleTaskChange = (e) => {
     e.preventDefault();
@@ -56,7 +56,31 @@ function TaskList() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (task === "") {
-      alert("El campo tarea no puede estar vacío");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Debes agregar una tarea",
+      });
+      return;
+    }
+
+    if (task.length > 30) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "La tarea no puede tener más de 30 caracteres",
+      });
+      setTask("")
+      return;
+    }
+
+    if (task.length < 3) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "La tarea debe tener al menos 3 caracteres",
+      });
+      setTask("")
       return;
     }
 
@@ -85,6 +109,7 @@ function TaskList() {
                     placeholder="¿Qué necesitas hacer?"
                     value={task}
                     onChange={handleTaskChange}
+                    autoComplete="off"
                   />
                 </div>
                 <div className="button-div col-lg-4 d-flex align-items-center">
@@ -102,5 +127,3 @@ function TaskList() {
 }
 
 export default TaskList;
-
-
